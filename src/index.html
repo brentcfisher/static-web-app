@@ -15,7 +15,10 @@
           Open the console in the browser developer tools to see the API responses.
       </blockquote>
       <div>
-          <button id="list" onclick="list()">List</button>
+          <button id="list books" onclick="list('Book')">List Books</button>
+          <button id="list authors" onclick="list('Author')">List Authors</button>
+          <button id="list series" onclick="list('Series')">List Series</button>
+          <button id="list persons" onclick="list('Person')">List Persons</button>
           <button id="get" onclick="get()">Get</button>
           <button id="update" onclick="update()">Update</button>
           <button id="create" onclick="create()">Create</button>
@@ -23,9 +26,9 @@
       </div>
       <script>
 
-          async function list() {
-            const endpoint = '/data-api/rest/Person';
-            const response = await fetch(endpoint);
+          async function list(entity) {
+            const endpoint = '/data-api/rest';
+            const response = await fetch(`${endpoint}/${entity}`);
             const data = await response.json();
             console.table(data.value);
           }

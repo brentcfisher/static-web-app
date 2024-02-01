@@ -10,7 +10,8 @@
   "runtime": {
     "rest": {
       "enabled": true,
-      "path": "/rest"
+      "path": "/rest",
+      "request-body-strict": true
     },
     "graphql": {
       "allow-introspection": true,
@@ -37,6 +38,126 @@
           "role": "anonymous"
         }
       ]
+    },
+    "Author": {
+      "source": {
+        "object": "dbo.authors",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Author",
+          "plural": "Authors"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ],
+      "relationships": {
+        "books": {
+          "cardinality": "many",
+          "target.entity": "Book",
+          "source.fields": [],
+          "target.fields": [],
+          "linking.object": "dbo.books_authors",
+          "linking.source.fields": [],
+          "linking.target.fields": []
+        }
+      }
+    },
+    "Book": {
+      "source": {
+        "object": "dbo.books",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Book",
+          "plural": "Books"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ],
+      "relationships": {
+        "authors": {
+          "cardinality": "many",
+          "target.entity": "Author",
+          "source.fields": [],
+          "target.fields": [],
+          "linking.object": "dbo.books_authors",
+          "linking.source.fields": [],
+          "linking.target.fields": []
+        },
+        "series": {
+          "cardinality": "one",
+          "target.entity": "Series",
+          "source.fields": [],
+          "target.fields": [],
+          "linking.object": "dbo.books",
+          "linking.source.fields": [],
+          "linking.target.fields": []
+        }
+      }
+    },
+    "Series": {
+      "source": {
+        "object": "dbo.series",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Series",
+          "plural": "Series"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ],
+      "relationships": {
+        "books": {
+          "cardinality": "many",
+          "target.entity": "Book",
+          "source.fields": [],
+          "target.fields": [],
+          "linking.object": "dbo.books",
+          "linking.source.fields": [],
+          "linking.target.fields": []
+        }
+      }
     }
   }
 }
