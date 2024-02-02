@@ -15,14 +15,10 @@
           Open the console in the browser developer tools to see the API responses.
       </blockquote>
       <div>
-          <button id="list books" onclick="list('Book')">List Books</button>
-          <button id="list authors" onclick="list('Author')">List Authors</button>
-          <button id="list series" onclick="list('Series')">List Series</button>
-          <button id="list persons" onclick="list('Person')">List Persons</button>
-          <button id="get" onclick="get()">Get</button>
-          <button id="update" onclick="update()">Update</button>
-          <button id="create" onclick="create()">Create</button>
-          <button id="delete" onclick="del()">Delete</button>
+          <button id="list objects" onclick="list('Object')">List Objects</button>
+          <button id="get object" onclick="get()">Get object</button>
+          <button id="get hourly meter readings" onclick="getMR('Hourly')">Get hourly meter readings</button>
+          <button id="get hourly gas analysis readings" onclick="getGA('Hourly')">Get hourly gas analysis readings</button>
       </div>
       <script>
 
@@ -34,9 +30,31 @@
           }
 
           async function get() {
-            const id = 1;
-            const endpoint = `/data-api/rest/Person/Id`;
+            const id = 55;
+            const endpoint = `/data-api/rest/Object/objectId`;
             const response = await fetch(`${endpoint}/${id}`);
+            const result = await response.json();
+            console.table(result.value);
+          }
+
+          async function getMR(granularity) {
+            const startTime = 1706371200
+            const endTime = 1706457600
+            const objectName = "TCEAST_EFM_1_MTR"
+            const filter = `meterName eq '${objectName}' and time ge ${startTime} and time lt ${endTime}`;
+            const endpoint = `/data-api/rest/${granularity}MeterReading`;
+            const response = await fetch(`${endpoint}?$filter=${filter}`);
+            const result = await response.json();
+            console.table(result.value);
+          }
+
+          async function getGA(granularity) {
+            const startTime = 1706371200
+            const endTime = 1706457600
+            const objectName = "TCEAST_EFM_1_GQ"
+            const filter = `gqName eq '${objectName}' and time ge ${startTime} and time lt ${endTime}`;
+            const endpoint = `/data-api/rest/${granularity}GasAnalysisReading`;
+            const response = await fetch(`${endpoint}?$filter=${filter}`);
             const result = await response.json();
             console.table(result.value);
           }

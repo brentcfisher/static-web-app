@@ -2,10 +2,10 @@
   "$schema": "https://github.com/Azure/data-api-builder/releases/latest/download/dab.draft.schema.json",
   "data-source": {
     "database-type": "mssql",
+    "connection-string": "@env('DATABASE_CONNECTION_STRING')",
     "options": {
-      "set-session-context": false 
-    },
-    "connection-string": "@env('DATABASE_CONNECTION_STRING')"
+      "set-session-context": false
+    }
   },
   "runtime": {
     "rest": {
@@ -14,41 +14,67 @@
       "request-body-strict": true
     },
     "graphql": {
-      "allow-introspection": true,
       "enabled": true,
-      "path": "/graphql"
+      "path": "/graphql",
+      "allow-introspection": true
     },
     "host": {
-      "mode": "production",
       "cors": {
-        "origins": ["http://localhost:4280"],
+        "origins": [
+          "http://localhost:4280"
+        ],
         "allow-credentials": false
       },
       "authentication": {
         "provider": "StaticWebApps"
-      }
+      },
+      "mode": "development"
     }
   },
   "entities": {
-    "Person": {
-      "source": "dbo.MyTestPersonTable",
+    "Object": {
+      "source": {
+        "object": "dbo.objectDefine",
+        "type": "table",
+        "parameters": {},
+        "key-fields": []
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Object",
+          "plural": "Objects"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
       "permissions": [
         {
-          "actions": ["*"],
-          "role": "anonymous"
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
         }
       ]
     },
-    "Author": {
+    "HourlyMeterReading": {
       "source": {
-        "object": "dbo.authors",
-        "type": "table"
+        "object": "dbo.hourlyMeterReadingView",
+        "type": "view",
+        "key-fields": [
+          "meterId",
+          "time",
+          "auditVersion"
+        ]
       },
       "graphql": {
         "enabled": true,
         "type": {
-          "singular": "Author",
-          "plural": "Authors"
+          "singular": "HourlyMeterReading",
+          "plural": "HourlyMeterReadings"
         }
       },
       "rest": {
@@ -59,33 +85,27 @@
           "role": "anonymous",
           "actions": [
             {
-              "action": "*"
+              "action": "read"
             }
           ]
         }
-      ],
-      "relationships": {
-        "books": {
-          "cardinality": "many",
-          "target.entity": "Book",
-          "source.fields": [],
-          "target.fields": [],
-          "linking.object": "dbo.books_authors",
-          "linking.source.fields": [],
-          "linking.target.fields": []
-        }
-      }
+      ]
     },
-    "Book": {
+    "HourlyGasAnalysisReading": {
       "source": {
-        "object": "dbo.books",
-        "type": "table"
+        "object": "dbo.hourlyGasAnalysisView",
+        "type": "view",
+        "key-fields": [
+          "gqId",
+          "time",
+          "auditVersion"
+        ]
       },
       "graphql": {
         "enabled": true,
         "type": {
-          "singular": "Book",
-          "plural": "Books"
+          "singular": "HourlyGasAnalysisReading",
+          "plural": "HourlyGasAnalysisReadings"
         }
       },
       "rest": {
@@ -96,68 +116,11 @@
           "role": "anonymous",
           "actions": [
             {
-              "action": "*"
+              "action": "read"
             }
           ]
         }
-      ],
-      "relationships": {
-        "authors": {
-          "cardinality": "many",
-          "target.entity": "Author",
-          "source.fields": [],
-          "target.fields": [],
-          "linking.object": "dbo.books_authors",
-          "linking.source.fields": [],
-          "linking.target.fields": []
-        },
-        "series": {
-          "cardinality": "one",
-          "target.entity": "Series",
-          "source.fields": [],
-          "target.fields": [],
-          "linking.object": "dbo.books",
-          "linking.source.fields": [],
-          "linking.target.fields": []
-        }
-      }
-    },
-    "Series": {
-      "source": {
-        "object": "dbo.series",
-        "type": "table"
-      },
-      "graphql": {
-        "enabled": true,
-        "type": {
-          "singular": "Series",
-          "plural": "Series"
-        }
-      },
-      "rest": {
-        "enabled": true
-      },
-      "permissions": [
-        {
-          "role": "anonymous",
-          "actions": [
-            {
-              "action": "*"
-            }
-          ]
-        }
-      ],
-      "relationships": {
-        "books": {
-          "cardinality": "many",
-          "target.entity": "Book",
-          "source.fields": [],
-          "target.fields": [],
-          "linking.object": "dbo.books",
-          "linking.source.fields": [],
-          "linking.target.fields": []
-        }
-      }
+      ]
     }
   }
 }
